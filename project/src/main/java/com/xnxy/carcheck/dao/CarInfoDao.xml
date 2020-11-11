@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xnxy.carcheck.dao.CarInfoDao">
+	<!-- Integer updataCarInfo(CarInfo carInfo); Integer deleteCarInfo(@Param("id")Integer 
+		id); Integer addCarInfo(CarInfo carinfo); List<CarInfo> queryCarInfo(@Param("condition")String 
+		condition); -->
+	<select id="queryCarInfo" resultType="com.xnxy.carcheck.po.CarInfo">
+		select * from carinfo
+	</select>
+	<select id="queryFiewCarInfo" resultType="com.xnxy.carcheck.po.CarInfo">
+		select * from carinfo
+		where carId like #{condition} or ownnerName like #{condition}
+	</select>
+	<insert id="addCarInfo" parameterType="com.xnxy.carcheck.po.CarInfo">
+		insert into
+		carinfo(carId,carType,ownnerName,ownnerPhone,carCheckTime,carInsuranceTime,technicalGradeTime,secondMaintenanceTime)
+		values(#{carId},#{carType},#{ownnerName},#{ownnerPhone},#{carCheckTime},#{carInsuranceTime},#{technicalGradeTime},#{secondMaintenanceTime})
+	</insert>
+	<select id="checkCarId" parameterType="java.lang.String" resultType="int">
+		select count(carId) from
+		carinfo where carId=#{carId}
+	</select>
+	<update id="updataCarInfo" parameterType="com.xnxy.carcheck.po.CarInfo">
+		update carinfo set
+		carType=#{carType},ownnerName=#{ownnerName},ownnerPhone=#{ownnerPhone},carCheckTime=#{carCheckTime},carInsuranceTime=#{carInsuranceTime},technicalGradeTime=#{technicalGradeTime},secondMaintenanceTime=#{secondMaintenanceTime}
+		where id=#{id}
+	</update>
+	<delete id="deleteCarInfo">
+		delete from carinfo where id=#{id}
+	</delete>
+	<delete id="truncatCarInfo">
+		truncate carinfo
+	</delete>
+	<insert id="insertBatch" parameterType="java.util.List">
+		insert into
+		carinfo(carId,carType,ownnerName,ownnerPhone,carCheckTime,carInsuranceTime,technicalGradeTime,secondMaintenanceTime)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.carId},#{item.carType},#{item.ownnerName},#{item.ownnerPhone},#{item.carCheckTime},#{item.carInsuranceTime},#{item.technicalGradeTime},#{item.secondMaintenanceTime})
+		</foreach>
+	</insert>
+
+	<!-- <select id="queryAll" resultType="com.szitbz.movebooking.po.Move_Booking"> 
+		select * from move_booking </select> <update id="updataState" parameterType="com.szitbz.movebooking.po.Move_Booking"> 
+		update move_booking set status=#{status} where id=#{id} </update> <insert 
+		id="save" parameterType="com.szitbz.movebooking.po.Move_Booking"> insert 
+		into move_booking (area,cartype,movedate,contact,phone) values(#{area},#{cartype},#{movedate},#{contact},#{phone}) 
+		</insert> -->
+</mapper>

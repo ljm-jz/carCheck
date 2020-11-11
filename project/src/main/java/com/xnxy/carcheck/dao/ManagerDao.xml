@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xnxy.carcheck.dao.ManagerDao">
+	<select id="queryManager" resultType="com.xnxy.carcheck.po.Manager"
+		parameterType="com.xnxy.carcheck.po.Manager">
+		select * from manager 
+		<if test="condition!=''">
+			where name like #{condition} or realName like #{condition}
+		</if>
+	</select>
+	<select id="login" resultType="com.xnxy.carcheck.po.Manager">
+		select * from manager where
+		name=#{name} and pwd=#{pwd}
+	</select>
+	<insert id="addManeger" parameterType="com.xnxy.carcheck.po.Manager">
+		insert into
+		manager(name,realName,phone,sex,age,address)
+		values(#{name},#{realName},#{phone},#{sex},#{age},#{address})
+	</insert>
+	<select id="checkName" parameterType="java.lang.String"
+		resultType="int">
+		select count(1) from manager where name=#{name}
+	</select>
+
+	<delete id="removeManager">
+		delete from manager where id=#{mid}
+	</delete>
+	<update id="changePwd">
+		update manager set pwd=#{pwd} where id=#{mid}
+	</update>
+	<update id="updateManager" parameterType="com.xnxy.carcheck.po.Manager">
+		update manager set
+		realName=#{realName},
+		<if test="name!='admin'">
+		 pwd="my123456",
+		</if>
+		phone=#{phone},
+		sex=#{sex},
+		age=#{age},
+		address=#{address} where id=#{id}
+	</update>
+	<!-- <select id="queryAll" resultType="com.szitbz.movebooking.po.Move_Booking"> 
+		select * from move_booking </select> public Manager login(String name,String 
+		pwd); public Integer addManeger(Manager maneger); public Integer checkName(String 
+		newName); public Integer removeManager(Integer mid); public int changePwd(Integer 
+		mid, String pwd); <update id="updataState" parameterType="com.szitbz.movebooking.po.Move_Booking"> 
+		update move_booking set status=#{status} where id=#{id} </update> <insert 
+		id="save" parameterType="com.szitbz.movebooking.po.Move_Booking"> insert 
+		into move_booking (area,cartype,movedate,contact,phone) values(#{area},#{cartype},#{movedate},#{contact},#{phone}) 
+		</insert> -->
+</mapper>

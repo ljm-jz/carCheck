@@ -1,0 +1,166 @@
+<html>
+<head>
+<title>木木车检</title>
+<meta charset="utf-8">
+<meta name="keywords" content="keyword1,keyword2,keyword3">
+<meta name="description" content="this is my page">
+<meta name="content-type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="./layui/css/layui.css" type="text/css">
+<style type="text/css">
+body.html {
+	font-family: "楷体";
+}
+
+#main {
+	width: 100%;
+	height: 100%;
+	display: grid;
+	grid-template-rows: 2fr 10fr 0.5fr;
+	grid-template-areas: "top" "center" "tail";
+	display: grid;
+}
+
+#top {
+	grid-area: top;
+	background: -webkit-linear-gradient(left, #4F4F4F, #ADADAD);
+	/* Safari 5.1 - 6.0 */
+	background: -o-linear-gradient(right, #4F4F4F, #ADADAD);
+	/* Opera 11.1 - 12.0 */
+	background: -moz-linear-gradient(right, #4F4F4F, #ADADAD);
+	/* Firefox 3.6 - 15 */
+	background: linear-gradient(to right, #4F4F4F, #ADADAD); /* 标准的语法 */
+}
+
+#left {
+	grid-area: left;
+}
+
+#center {
+	grid-area: center;
+	display: grid;
+	grid-template-colunms: 1fr 2fr;
+	grid-template-areas: "left right";
+	background-image: url("./img/header.jpg");
+	background-size: 65% 100%;
+	background-repeat: no-repeat;
+}
+
+#right {
+	grid-area: right;
+}
+
+#loginbox {
+	margin-top: 20px;
+	width: 80%;
+	float: right;
+	width: 80%;
+	text-align: center;
+}
+
+div>p {
+	font-size: 40px;
+	text-indent: 40px;
+	margin-bottom: 40px;
+	color: #3A006F;
+}
+
+#tail {
+	grid-area: tail;
+	background-color: gray;
+}
+
+#form {
+	width: 90%;
+	height: 90%;
+	margin: auto;
+}
+
+.layui-input {
+	border-color: #3A006F;
+	border-style: solid;
+}
+
+.hidden {
+	display: none;
+}
+
+.error {
+	color: red;
+}
+</style>
+</head>
+<body>
+	<div id="main">
+		<div id="top"></div>
+		<div id="center">
+			<div id="left"></div>
+			<div id="right">
+				<div id="loginbox">
+					<p>登录界面</p>
+					<form class="layui-form" action="login.action" method="post"
+						id="loginForm">
+						<p class="error hidden" id="error"></p>
+						<div class="layui-form-item">
+							<div class="layui-inline">
+								<label class="layui-form-label">用户名</label>
+								<div class="layui-input-inline">
+									<input type="text" name="uname" autocomplete="off"
+										lay-verify="required" class="layui-input">
+								</div>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-inline">
+								<label class="layui-form-label">密&nbsp;&nbsp;&nbsp;&nbsp;码</label>
+								<div class="layui-input-inline">
+									<input type="password" name="pwd" lay-verify="required"
+										autocomplete="off" class="layui-input">
+								</div>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button class="layui-btn layui-btn-primary" lay-filter="demo1">登录</button>
+								<button type="reset" class="layui-btn layui-btn-primary">取消</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div id="tail"></div>
+	</div>
+</body>
+<script src="./layui/layui.js" charset="utf-8"></script>
+<script type="text/javascript" src="./jQuery/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="./jQuery/jquery.form.js"></script>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script>
+var lidx;
+	layui.use([ 'form', 'layedit', 'laydate' ,'layer'], function() {
+		var form = layui.form, layer = layui.layer, layedit = layui.layedit,layer=layui.layer;
+		//创建一个编辑器
+		//var editIndex = layedit.build('LAY_demo_editor');
+		$("#loginForm").ajaxForm({
+			dataType:"json",
+			beforeSubmit:function(){
+				lidx = layer.load(1, {
+					  shade: [0.1,'#fff'] //0.1透明度的白色背景
+					});
+			},
+			success:function(data){
+				layer.close(lidx);
+				if(data.status<1)
+					{
+						document.querySelector("#error").classList.remove("hidden");
+						document.querySelector("#error").textContent=data.message;
+					}
+				else
+					{
+						window.location="./index.html";
+					}
+			}
+		});
+	});
+</script>
+</html>

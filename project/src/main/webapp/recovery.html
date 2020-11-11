@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>recovery.html</title>
+
+<meta charset="UTF-8">
+<meta name="keywords" content="keyword1,keyword2,keyword3">
+<meta name="description" content="this is my page">
+<meta name="content-type" content="text/html; charset=UTF-8">
+
+<!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+<link rel="stylesheet" type="text/css" href="./layui/css/layui.css">
+
+<style>
+body {
+	margin: 10px;
+}
+
+#main {
+	width: 100%;
+	height: 100%;
+	display: grid;
+	grid-template-rows: 1fr 2fr 8fr 1fr;
+	grid-template-areas: "top" "upload" "filelist" "tail";
+}
+
+#uploadbox {
+	grid-area: upload;
+}
+
+#fileList {
+	grid-area: filelist;
+	font-family: "楷体";
+	margin-left: 20%;
+	margin-top: 20px;
+}
+
+#history {
+	position: absolute;
+	width: 400px;
+	height: 90%;
+	right: 60px;
+	margin-top: 140px;
+	font-family: "楷体";
+}
+
+#fileList ul li {
+	margin-top: 10px;
+}
+
+#history ul li {
+	margin-top: 10px;
+}
+
+#fileList ul li span,a {
+	margin-left: 20px;
+}
+
+#uploadbox {
+	margin-left: 30%;
+}
+
+#upload {
+	margin-top: 5px;
+}
+}
+</style>
+</head>
+<body>
+
+	<div id="main">
+		<div id="uploadbox" class="layui-upload">
+			<button type="button" class="layui-btn layui-btn-nomal"
+				id="checkFile">选择文件</button>
+			<br>
+			<button type="button" class="layui-btn" id="upload">开始上传</button>
+		</div>
+		<div id="fileList">
+			<ul></ul>
+		</div>
+		<div id="history">
+			<ul></ul>
+		</div>
+	</div>
+
+</body>
+<script type="text/javascript" src="./layui/layui.js"></script>
+<script type="text/javascript" src="./jQuery/jquery-1.8.3.min.js"></script>
+<script>
+	layui.config({
+		version : '1524837277753' //为了更新 js 缓存，可忽略
+	});
+
+	var i;
+	function isExcelFile(name){
+		if(name.substr(name.indexOf(".xls"))==".xls"){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	layui.use([ 'layer', 'upload', 'table', 'element' ], function() {
+		var upload = layui.upload //上传
+		, layer = layui.layer, table = layui.table, element = layui.element;
+		upload.render({
+			elem : '#checkFile',
+			url : 'leadingin.action',//上传接口
+			accept : "file",
+			auto : false,
+			bindAction : "#upload",
+			before : function(obj) {
+				i = layer.load(1, {
+					shade : [ 0.1, '#fff' ]
+				//0.1透明度的白色背景
+				});
+			},
+			done : function(res) {
+				layer.close(i);
+				if (res.code == 0) {
+					layer.msg(res.msg, {icon:1,
+						time : 1000
+					},function(){
+						window.location=window.location;
+					});
+				} else {
+					layer.msg(res.msg, {icon:2,
+						time : 1000
+					});
+				}
+			}
+		});
+		document.querySelector("#fileList").addEventListener('click',
+				function(e) {
+					if (e.target.textContent == '恢复') {
+						var index = layer.load(1, {
+							shade : [ 0.1, '#fff' ]
+						//0.1透明度的白色背景
+						});
+						var filePath = e.target.getAttribute("file-path");
+						$.ajax({
+							type : 'post',
+							url : 'recovery.action',
+							data : {
+								filePath : filePath
+							},
+							success : function(data) {
+								layer.close(index);
+								layer.msg(data.message, {
+									time : 2000
+								});
+							}
+						});
+					}
+				});
+
+	});
+
+	$
+			.ajax({
+				type : 'post',
+				url : 'fileList.action',
+				dataType : 'json',
+				success : function(data) {
+					var ul = document.querySelector("#fileList ul");
+					var l1 = document.createElement('li');
+					if (data.length == 0) {
+						l1.innerHTML = "<span style='margin-left:40px'>暂无备份数据</span>";
+					} else {
+						l1.innerHTML = "<span style='margin-left:40px'>文件名</span><span style='margin-left:50px'>备份时间</span>";
+					}
+					ul.appendChild(l1);
+					for (var i = 0; i < data.length; i++) {
+						var li = document.createElement('li');
+						li.innerHTML = "<span>"
+								+ data[i].fileName
+								+ "</span><span>"
+								+ data[i].date
+								+ "</span><a href='javascript:;' style='color:green' file-path='"+data[i].filePath+"'>恢复</a><a href='"+data[i].fileUrl+"'>下载</a>";
+						ul.appendChild(li);
+					}
+				}
+			});
+	$
+			.ajax({
+				type : 'post',
+				url : 'history.action',
+				dataType : 'json',
+				success : function(data) {
+					//<li style="text-align: center">数据导入历史记录</li>
+					//<li><span style='margin-left:40px'>文件名</span><span style='margin-left:50px'>导入时间</span ><span style='margin-left:50px'>操作者</span></li>
+					//<li><span style='margin-left:20px'>20980987.xls</span><span style='margin-left:24px'>2012-12-31</span><span style='margin-left:36px'>xlkia9876</span></li>
+					var ul = document.querySelector("#history ul");
+					var l1 = document.createElement('li');
+					if (data.length == 0) {
+						l1.innerHTML = "<span style='margin-left:100px'>暂无备份数据</span>";
+					} else {
+						var litip = document.createElement('li');
+						litip.innerHTML = "<span style='margin-left:100px'>历史导入记录</span>";
+						ul.appendChild(litip);
+						l1.innerHTML = "<span style='margin-left:40px'>文件名</span><span style='margin-left:50px'>导入时间</span><span style='margin-left:50px'>操作者</span>";
+					}
+					ul.appendChild(l1);
+					for (var i = 0; i < data.length; i++) {
+						var lidata = document.createElement('li');
+						lidata.innerHTML = "<span style='margin-left:20px'>"
+								+ data[i].fileName
+								+ "</span><span style='margin-left:24px'>"
+								+ changeDateFormat(data[i].leadTime)
+								+ "</span><span style='margin-left:36px'>"
+								+ data[i].name + "</span>";
+						ul.appendChild(lidata);
+					}
+				}
+			});
+	function changeDateFormat(date) {
+		var data = new Date(date);
+		var y = data.getFullYear();
+		var m = data.getMonth() + 1;
+		var d = data.getDate();
+		return y + "-" + (m <= 9 ? "0" + m : m) + "-" + (d <= 9 ? "0" + d : d);
+	}
+</script>
+</html>

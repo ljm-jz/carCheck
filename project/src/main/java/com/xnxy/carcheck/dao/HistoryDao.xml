@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xnxy.carcheck.dao.HistoryDao">
+	
+	<insert id="saveHistory">
+		insert into history(fileName,leadTime,mid) values(#{fileName},#{leadTime},#{mid})
+	</insert>
+	<resultMap type="com.xnxy.carcheck.vo.HistoryVo" id="historyVoMap">
+		<id column="id" property="id"/>
+		<result column="fileName" property="fileName"/>
+		<result column="leadTime" property="leadTime"/>
+		<association property="name" javaType="java.lang.String" select="queryManagerName" column="mid">
+		</association>
+	</resultMap>
+	<select id="queryHistory" resultMap="historyVoMap">
+		select * from history
+	</select>
+	<select id="queryManagerName" resultType="java.lang.String">
+		select name from manager where id=#{mid}
+	</select>
+</mapper>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>listCarInfo.html</title>
+
+<meta charset="UTF-8">
+<meta name="keywords" content="keyword1,keyword2,keyword3">
+<meta name="description" content="this is my page">
+<meta name="content-type" content="text/html; charset=UTF-8">
+
+<!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+<link rel="stylesheet" type="text/css" href="./layui/css/layui.css">
+</head>
+
+<body>
+<table class="layui-hide" id="test"></table>
+              
+          
+<script src="./layui/layui.js" charset="utf-8"></script>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 --> 
+ 
+<script type="text/javascript">
+layui.use('table', function(){
+  var table = layui.table;
+  
+  table.render({
+    elem: '#test'
+    ,url:'carInfoList.action'
+    ,page: false
+    ,cols: [[
+      {field:'id', width:80, title: 'ID', sort: true}
+      ,{field:'carType', width:100, title: 'carType'}
+      ,{field:'carId', width:80, title: 'carId', sort: true}
+    ]]
+    
+  });
+});
+</script>
+</body>
+</html>

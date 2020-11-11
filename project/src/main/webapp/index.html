@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>index.html</title>
+
+<meta charset="utf-8">
+<meta name="keywords" content="keyword1,keyword2,keyword3">
+<meta name="description" content="this is my page">
+<meta name="content-type" content="text/html; charset=UTF-8">
+
+<!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+<link rel="stylesheet" type="text/css" href="./layui/css/layui.css">
+<style type="text/css">
+body,html {
+	width: 100%;
+	height: 100%;
+	font-family: "楷体";
+}
+
+#main {
+	width: 100%;
+	height: 100%;
+	display: grid;
+	grid-template-rows: 2fr 12fr 0.5fr;
+	grid-template-areas: "header" "body" "tail";
+}
+
+#header {
+	grid-area: header;
+	display: grid;
+	grid-template-columns: 1fr 8fr;
+	grid-template-areas: "logo others";
+}
+
+#logo {
+	grid-area: logo;
+}
+
+#others {
+	grid-area: others;
+	/**从上至下渐变
+	/*background: -webkit-linear-gradient(gray, black); /* Safari 5.1 - 6.0 */
+	/*background: -o-linear-gradient(gray, black); /* Opera 11.1 - 12.0 */
+	/*background: -moz-linear-gradient(gray, black); /* Firefox 3.6 - 15 */
+	/*background: linear-gradient(gray, black); /* 标准的语法（必须放在最后） */
+	/*background-color: #4F4F4F;*/
+	background: -webkit-linear-gradient(left, #4F4F4F, #ADADAD);
+	/* Safari 5.1 - 6.0 */
+	background: -o-linear-gradient(right, #4F4F4F, #ADADAD);
+	/* Opera 11.1 - 12.0 */
+	background: -moz-linear-gradient(right, #4F4F4F, #ADADAD);
+	/* Firefox 3.6 - 15 */
+	background: linear-gradient(to right, #4F4F4F, #ADADAD); /* 标准的语法 */
+	color: #3A006F;
+	padding: 10px;
+	font-size: 60px;
+	text-indent: 20px;
+	letter-spacing: 20px;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+#body {
+	display: grid;
+	grid-area: body;
+	grid-template-columns: 1fr 8fr;
+	grid-template-areas: "menu content";
+}
+
+#menubox {
+	grid-area: menu;
+}
+
+#contentbox {
+	grid-area: content;
+	background-color: red;
+}
+
+#tailbox {
+	grid-area: tail;
+	background-color: gray;
+}
+
+dd {
+	text-align: center;
+}
+/*ul{
+	width:100%;
+	height:100%;
+	background-color:green;
+	padding:10px;
+}
+ul li{
+	height:40px;
+	padding: 10px;
+	margin-top:10px;
+}*/
+</style>
+<script type="text/javascript" src="./layui/layui.js"></script>
+</head>
+
+<body>
+	<div id="main">
+		<div id="header">
+			<div id="logo" class="layui-nav"></div>
+			<div id="others">
+				<span><i>木影检车信息管理系统</i></span>
+			</div>
+		</div>
+		<div id="body">
+			<div id="menubox">
+				<ul class="layui-nav layui-nav-tree layui-inline" lay-filter="demo"
+					style="margin-right: 10px;width:100%;height:100%">
+					<li class="layui-nav-item hidden" style="" id="mc"><a href="javascript:;">用户管理</a>
+						<dl class="layui-nav-child">
+							<dd>
+								<a href="javascript:;">新增用户</a>
+							</dd>
+							<dd>
+								<a href="javascript:;">查看用户</a>
+							</dd>
+						</dl></li>
+					<li class="layui-nav-item"><a href="javascript:;">修改密码</a></li>
+					<li class="layui-nav-item"><a href="javascript:;">车辆信息</a>
+						<dl class="layui-nav-child">
+							<dd>
+								<a href="javascript:;">新增检车信息</a>
+							</dd>
+							<dd>
+								<a href="javascript:;">查看检车信息</a>
+							</dd>
+						</dl></li>
+					<li class="layui-nav-item"><a href="javascript:;">数据导入</a></li>
+					<li class="layui-nav-item"><a href="logout.action">退出系统</a></li>
+				</ul>
+			</div>
+			<div id="content">
+				<iframe src="" style="width:100%;height:100%;border:0;background-color: #ADADAD"></iframe>
+			</div>
+		</div>
+		<div id="tailbox"></div>
+	</div>
+</body>
+<script type="text/javascript" src="./jQuery/jquery-1.8.3.min.js"></script>
+<script type="text/javascript">
+	function getRole() {
+		$.ajax({
+			type : 'post',
+			url : 'getRole.action',
+			dataType : 'json',
+			success : function(data) {
+				console.log(data);
+				if (data.role == 1) {
+					$("#mc").css("display","block");
+				} else {
+					$("#mc").css("display","none");
+				}
+			}
+		});
+	}
+	getRole();
+	document.querySelector("#menubox").addEventListener("click", function(e) {
+		if (e.target.parentNode.nodeName != "LI")
+			return;
+		var node = e.target.parentNode;
+		if (node.classList.contains("layui-nav-itemed")) {
+			node.classList.remove("layui-nav-itemed");
+		} else {
+			node.classList.add("layui-nav-itemed");
+		}
+	});
+
+	function changeView(value) {
+		document.querySelector("#content iframe").setAttribute("src",
+				"./" + value + ".html");
+	}
+
+	document.querySelector("#menubox").addEventListener('click', function(e) {
+		if (e.target.nodeName == 'A') {
+			var menu = e.target.textContent;
+			var iframe = document.querySelector("#content iframe");
+			if ("新增用户" == menu) {
+				iframe.setAttribute("src", "addManager.html");
+				iframeSrc = "addManager.html";
+			} else if ("查看用户" == menu) {
+				iframe.setAttribute("src", "listManager.html");
+				iframeSrc = "listManager.html";
+			} else if ("修改密码" == menu) {
+				iframe.setAttribute("src", "changePwd.html");
+				iframeSrc = "changePwd.html";
+			} else if ("新增检车信息" == menu) {
+				iframe.setAttribute("src", "addCarInfo.html");
+				iframeSrc = "addCarInfo.html";
+			} else if ("查看检车信息" == menu) {
+				iframe.setAttribute("src", "listCarInfo.html");
+				iframeSrc = "listCarInfo.html";
+			} else if ("数据导入" == menu) {
+				iframe.setAttribute("src", "recovery.html");
+				iframeSrc = "recovery.html";
+			}
+		}
+	});
+</script>
+</html>

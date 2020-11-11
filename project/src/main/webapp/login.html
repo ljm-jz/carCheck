@@ -1,0 +1,93 @@
+<html>
+	<head>
+		<title>木木车检</title>
+		<style type="text/css">
+			html,body{
+				width: 100%;
+				height: 100%;
+				overflow: hidden;
+				font-family: '楷体';
+			}
+			input{
+				margin-top:20px;
+				height: 24px;
+				opacity: 0.4;
+
+			}
+			div{
+				margin-left:50%;
+				margin-top:10%;
+				height: 300px;
+				width: 400px;
+				text-align: center;
+			}
+			.error{
+				font-size: 10px;
+				margin-top: 2px;
+				margin-bottom: 0px;
+				height: 20px;
+				padding: 0px;
+				color: red;
+			}
+			.conceal{
+				display: none;
+			}
+		</style>
+	</head>
+	<body style="background-image: url('./car.jpg');background-size: cover;background-repeat: no-repeat;">
+		<div>
+			<p><b>木木车检登录</b></p>
+			<form id="loginForm" method="post" action="login">
+				用户名：<input type="text" name="uname" required="required"><br>
+				<p class="error conceal" name="uname-error"><span>用户名不能为空</span></p>
+				密&nbsp;&nbsp;码：<input type="password" name="pwd" required="required"><br>
+				<p class="error conceal" name="pwd-error"><span>密码不能为空</span></p>
+				<input type="submit" name="login" value="登录">
+			</form>
+		</div>
+	</body>
+	<script type="text/javascript">
+		// $("#loginForm").ajaxForm({
+		// 	beforeSubmit:function(){
+
+		// 	}
+		// 	success:function(data){
+		// 		if(data.status>0)
+		// 		{
+		// 			location.href="show.jsp";
+		// 		}
+		// 		else
+		// 		{
+		// 			alert(data.message);
+		// 		}
+		// 	}
+		// })
+		document.querySelector("input[name='uname']").addEventListener('blur',function(e){
+			// console.log(e.target);
+			if(removeAllSpace(e.target.value)=='')
+			{
+				console.log(111);
+				document.querySelector("p[name='uname-error']").classList.remove("conceal");
+			}
+			else
+			{
+				document.querySelector("p[name='uname-error']").classList.add("conceal");
+			}
+		});
+		document.querySelector("input[name='pwd']").addEventListener('blur',function(e){
+			// console.log(e.target);
+			if(e.target.value=='')
+			{
+				document.querySelector("p[name='pwd-error']").classList.remove("conceal");
+			}
+			else
+			{
+				document.querySelector("p[name='pwd-error']").classList.add("conceal");
+			}
+		});
+		function removeAllSpace(string)
+		{
+			return string.replace(/\s/g,"");
+		}
+	</script>
+</html>
